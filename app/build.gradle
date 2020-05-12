@@ -32,6 +32,5 @@ dependencies {
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
-    // TODO (5) Add build dependencies required to use Espresso-Intents
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.1.0'
 }
