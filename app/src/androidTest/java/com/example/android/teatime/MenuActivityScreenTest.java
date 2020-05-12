@@ -1,6 +1,8 @@
 package com.example.android.teatime;
 
+/*
 import com.example.android.teatime.model.Tea;
+*/
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -14,9 +16,9 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-// import static org.hamcrest.Matchers.anything;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.anything;
+/*import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;*/
 
 /**
  * This test demos a user clicking on a GridView item in MenuActivity which opens up the
@@ -49,11 +51,11 @@ public class MenuActivityScreenTest {
 
         // Uses {@link Espresso#onData(org.hamcrest.Matcher)} to get a reference to a specific
         // GridView item and clicks it.
-        // onData(anything()).inAdapterView(withId(R.id.tea_grid_view)).atPosition(1).perform(click());
+        onData(anything()).inAdapterView(withId(R.id.tea_grid_view)).atPosition(1).perform(click());
 
         // click the second item of the GridView, which is green tea
-        onData(is(instanceOf(Tea.class))).atPosition(1)
-                .perform(click());
+        /*onData(is(instanceOf(Tea.class))).atPosition(1)
+                .perform(click());*/
 
         // Checks that the OrderActivity opens with the correct tea name displayed
         onView(withId(R.id.tea_name_text_view)).check(matches(withText(TEA_NAME)));
