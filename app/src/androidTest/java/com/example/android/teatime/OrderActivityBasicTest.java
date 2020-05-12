@@ -20,7 +20,7 @@ public class OrderActivityBasicTest {
     public ActivityTestRule<OrderActivity> activityTestRule =
             new ActivityTestRule<>(OrderActivity.class);
 
-    @Test
+    /*@Test
     public void clickIncrementButton_ChangesQuantityAndCost() {
         //1. Find the view
         //2. Perform action on the view
@@ -28,5 +28,15 @@ public class OrderActivityBasicTest {
         //3. Check if the view does what you expected
         onView(withId(R.id.quantity_text_view)).check(matches(withText("1")));
         onView(withId(R.id.cost_text_view)).check((matches(withText("$5.00"))));
+    }*/
+
+    @Test
+    public void clickDecrementButton_NoChangesQuantityAndCost() {
+        //1. Find the view
+        //2. Perform action on the view
+        onView(withId(R.id.decrement_button)).perform(click());
+        //3. Check if the view does what you expected
+        onView(withId(R.id.quantity_text_view)).check(matches(withText("0")));
+        onView(withId(R.id.cost_text_view)).check((matches(withText("$0.00"))));
     }
 }
