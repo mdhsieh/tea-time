@@ -22,9 +22,19 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.espresso.IdlingRegistry;
 import androidx.test.espresso.IdlingResource;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
+
+import static androidx.test.espresso.Espresso.onData;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.anything;
 
 /**
  * Usually Espresso syncs all view operations with the UI thread as well as AsyncTasks, but it can't
@@ -46,6 +56,8 @@ import androidx.test.rule.ActivityTestRule;
 @RunWith(AndroidJUnit4.class)
 public class IdlingResourceMenuActivityTest {
 
+    public static final String TEA_NAME = "Green Tea";
+
     /**
      * The ActivityTestRule is a rule provided by Android used for functional testing of a single
      * activity. The activity that will be tested, MenuActivity in this case, will be launched
@@ -65,18 +77,29 @@ public class IdlingResourceMenuActivityTest {
     // the test is run.
     @Before
     public void registerIdlingResource() {
-
+        ActivityScenario activityScenario = ActivityScenario.launch(MenuActivity.class);
+        activityScenario.onActivity(new ActivityScenario.ActivityAction<MenuActivity>() {
+            @Override
+            public void perform(MenuActivity activity) {
+                mIdlingResource = activity.getIdlingResource();
+                // To prove that the test fails, omit this call:
+                IdlingRegistry.getInstance().register(mIdlingResource);
+            }
+        });
     }
 
     // TODO (7) Test that the gridView with Tea objects appears and we can click a gridView item
     @Test
     public void idlingResourceTest() {
-
+        onData(anything()).inAdapterView(withId(R.id.tea_grid_view)).atPosition(1).perform(click());
+        onView(withId(R.id.tea_name_text_view)).check(matches(withText(TEA_NAME)));
     }
 
     // TODO (8) Unregister resources when not needed to avoid malfunction
     @After
     public void unregisterIdlingResource() {
-
+        if (mIdlingResource != null) {
+            IdlingRegistry.getInstance().unregister(mIdlingResource);
+        }
     }
 }
