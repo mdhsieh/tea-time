@@ -22,8 +22,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import androidx.test.core.app.ActivityScenario;
-import androidx.test.espresso.Espresso;
 import androidx.test.espresso.IdlingRegistry;
 import androidx.test.espresso.IdlingResource;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -73,24 +71,12 @@ public class IdlingResourceMenuActivityTest {
 
     private IdlingResource mIdlingResource;
 
-
     // Registers any resource that needs to be synchronized with Espresso before the test is run.
     @Before
     public void registerIdlingResource() {
-        /*ActivityScenario activityScenario = ActivityScenario.launch(MenuActivity.class);
-        activityScenario.onActivity(new ActivityScenario.ActivityAction<MenuActivity>() {
-            @Override
-            public void perform(MenuActivity activity) {
-                mIdlingResource = activity.getIdlingResource();
-                // To prove that the test fails, omit this call:
-                IdlingRegistry.getInstance().register(mIdlingResource);
-            }
-        });*/
-
         mIdlingResource = mActivityTestRule.getActivity().getIdlingResource();
         // To prove that the test fails, omit this call:
         IdlingRegistry.getInstance().register(mIdlingResource);
-        // Espresso.registerIdlingResources(mIdlingResource);
     }
 
     @Test
