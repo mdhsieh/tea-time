@@ -19,6 +19,7 @@ android {
 }
 
 dependencies {
+    //TODO (9) Add espresso idling resource gradle dependency
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.annotation:annotation:1.0.0'
     implementation 'com.google.firebase:firebase-appindexing:10.2.1'
@@ -33,4 +34,8 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.1.0'
+
+    // use implementation because we are creating and adding IdlingResource class to production code,
+    // not just in androidTest namespace
+    implementation 'androidx.test.espresso:espresso-idling-resource:3.1.0'
 }
