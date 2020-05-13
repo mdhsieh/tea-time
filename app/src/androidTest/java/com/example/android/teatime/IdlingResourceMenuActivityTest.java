@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import androidx.test.core.app.ActivityScenario;
+import androidx.test.espresso.Espresso;
 import androidx.test.espresso.IdlingRegistry;
 import androidx.test.espresso.IdlingResource;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -73,11 +74,10 @@ public class IdlingResourceMenuActivityTest {
     private IdlingResource mIdlingResource;
 
 
-    // TODO (6) Registers any resource that needs to be synchronized with Espresso before
-    // the test is run.
+    // Registers any resource that needs to be synchronized with Espresso before the test is run.
     @Before
     public void registerIdlingResource() {
-        ActivityScenario activityScenario = ActivityScenario.launch(MenuActivity.class);
+        /*ActivityScenario activityScenario = ActivityScenario.launch(MenuActivity.class);
         activityScenario.onActivity(new ActivityScenario.ActivityAction<MenuActivity>() {
             @Override
             public void perform(MenuActivity activity) {
@@ -85,17 +85,21 @@ public class IdlingResourceMenuActivityTest {
                 // To prove that the test fails, omit this call:
                 IdlingRegistry.getInstance().register(mIdlingResource);
             }
-        });
+        });*/
+
+        mIdlingResource = mActivityTestRule.getActivity().getIdlingResource();
+        // To prove that the test fails, omit this call:
+        IdlingRegistry.getInstance().register(mIdlingResource);
+        // Espresso.registerIdlingResources(mIdlingResource);
     }
 
-    // TODO (7) Test that the gridView with Tea objects appears and we can click a gridView item
     @Test
     public void idlingResourceTest() {
         onData(anything()).inAdapterView(withId(R.id.tea_grid_view)).atPosition(1).perform(click());
         onView(withId(R.id.tea_name_text_view)).check(matches(withText(TEA_NAME)));
     }
 
-    // TODO (8) Unregister resources when not needed to avoid malfunction
+    // Remember to unregister resources when not needed to avoid malfunction.
     @After
     public void unregisterIdlingResource() {
         if (mIdlingResource != null) {

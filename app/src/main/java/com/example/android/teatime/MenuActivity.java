@@ -35,21 +35,18 @@ import com.example.android.teatime.model.Tea;
 
 import java.util.ArrayList;
 
-// TODO (1) Implement ImageDownloader.DelayerCallback
 public class MenuActivity extends AppCompatActivity implements ImageDownloader.DelayerCallback {
 
     Intent mTeaIntent;
 
     public final static String EXTRA_TEA_NAME = "com.example.android.teatime.EXTRA_TEA_NAME";
 
-    // TODO (2) Add a SimpleIdlingResource variable that will be null in production
+    // The Idling Resource which will be null in production.
     @Nullable
     private SimpleIdlingResource idlingResource;
 
     /**
-     * TODO (3) Create a method that returns the IdlingResource variable. It will
-     * instantiate a new instance of SimpleIdlingResource if the IdlingResource is null.
-     * This method will only be called from test.
+     * Only called from test, creates and returns a new {@link SimpleIdlingResource}.
      */
     @VisibleForTesting
     @NonNull
@@ -63,29 +60,6 @@ public class MenuActivity extends AppCompatActivity implements ImageDownloader.D
         return idlingResource;
     }
 
-    /**
-     * TODO (4) Using the method you created, get the IdlingResource variable.
-     * Then call downloadImage from ImageDownloader. To ensure there's enough time for IdlingResource
-     * to be initialized, remember to call downloadImage in either onStart or onResume.
-     * This is because @Before in Espresso Tests is executed after the activity is created in
-     * onCreate, so there might not be enough time to register the IdlingResource if the download is
-     * done too early.
-     */
-    @Override
-    protected void onStart() {
-        super.onStart();
-        ImageDownloader.downloadImage(this, this, idlingResource);
-    }
-
-    // TODO (5) Override onDone so when the thread in ImageDownloader is finished, it returns an
-    // ArrayList of Tea objects via the callback.
-    @Override
-    public void onDone(ArrayList<Tea> teas) {
-        GridView gridview = (GridView) findViewById(R.id.tea_grid_view);
-        TeaMenuAdapter adapter = new TeaMenuAdapter(this, R.layout.grid_item_layout, teas);
-        gridview.setAdapter(adapter);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +69,7 @@ public class MenuActivity extends AppCompatActivity implements ImageDownloader.D
         getSupportActionBar().setTitle(getString(R.string.menu_title));
 
         // Create an ArrayList of teas
-        final ArrayList<Tea> teas = new ArrayList<>();
+        /* final ArrayList<Tea> teas = new ArrayList<>();
         teas.add(new Tea(getString(R.string.black_tea_name), R.drawable.black_tea));
         teas.add(new Tea(getString(R.string.green_tea_name), R.drawable.green_tea));
         teas.add(new Tea(getString(R.string.white_tea_name), R.drawable.white_tea));
@@ -123,7 +97,50 @@ public class MenuActivity extends AppCompatActivity implements ImageDownloader.D
                 startActivity(mTeaIntent);
 
             }
-        });
+        }); */
 
+        // Get the IdlingResource instance
+        getIdlingResource();
+
+    }
+
+    /**
+     * We call ImageDownloader.downloadImage from onStart or onResume instead of in onCreate
+     * to ensure there is enougth time to register IdlingResource if the download is done
+     * too early (i.e. in onCreate)
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ImageDownloader.downloadImage(this, MenuActivity.this, idlingResource);
+    }
+
+    /**
+     * When the thread in {@link ImageDownloader} is finished, it will return an ArrayList of Tea
+     * objects via the callback's onDone().
+     */
+    @Override
+    public void onDone(ArrayList<Tea> teas) {
+        // Create a {@link TeaAdapter}, whose data source is a list of {@link Tea}s.
+        // The adapter know how to create grid items for each item in the list.
+        GridView gridview = (GridView) findViewById(R.id.tea_grid_view);
+        TeaMenuAdapter adapter = new TeaMenuAdapter(this, R.layout.grid_item_layout, teas);
+        gridview.setAdapter(adapter);
+
+
+        // Set a click listener on that View
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+
+                Tea item = (Tea) adapterView.getItemAtPosition(position);
+                // Set the intent to open the {@link OrderActivity}
+                mTeaIntent = new Intent(MenuActivity.this, OrderActivity.class);
+                String teaName = item.getTeaName();
+                mTeaIntent.putExtra(EXTRA_TEA_NAME, teaName);
+                startActivity(mTeaIntent);
+
+            }
+        });
     }
 }
